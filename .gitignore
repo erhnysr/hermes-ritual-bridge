@@ -21,3 +21,6 @@ npm-debug.log*
 .DS_Store
 .idea/
 .vscode/
+
+# Claude Code local skills/config (vendored ritual-dapp-skills has its own .git)
+.claude/
