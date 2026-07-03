@@ -1,0 +1,21 @@
+{
+  "name": "hermes-ritual-bridge",
+  "version": "0.1.0",
+  "description": "Cross-chain bridge smart contracts (Hermes <> Ritual)",
+  "license": "MIT",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "node": "hardhat node",
+    "deploy": "hardhat run scripts/deploy.ts",
+    "lint": "solhint 'contracts/**/*.sol'",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "solhint": "^5.0.0",
+    "typescript": "^5.4.0"
+  }
+}
