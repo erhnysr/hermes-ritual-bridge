@@ -1,5 +1,7 @@
 # hermes-ritual-bridge
 
+[![Contract on Ritual Explorer](https://img.shields.io/badge/Ritual%20testnet-0x076d1934%E2%80%A62441-6d28d9?logo=ethereum&logoColor=white)](https://explorer.ritualfoundation.org/address/0x076d193E55C526ae709c529EA952847eB3eb2441)
+
 A Solidity bridge that gives a **Hermes AI agent** access to decentralized,
 on-chain LLM inference via **Ritual Chain's native LLM precompile (`0x0802`)**.
 
