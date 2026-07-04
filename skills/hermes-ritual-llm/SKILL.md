@@ -196,6 +196,8 @@ The returned tuple is:
 
 ## References
 
-Contract, ABI, addresses, and fee semantics follow the official
-`ritual-foundation/ritual-dapp-skills` reference: `ritual-dapp-llm`,
-`ritual-dapp-wallet`, `ritual-dapp-deploy`, `ritual-dapp-da`.
+- **Source repo:** https://github.com/erhnysr/hermes-ritual-bridge — the
+  `HermesRitualLLM` contract, deploy/request scripts, tests, and verification bundle.
+- Contract, ABI, addresses, and fee semantics follow the official
+  `ritual-foundation/ritual-dapp-skills` reference: `ritual-dapp-llm`,
+  `ritual-dapp-wallet`, `ritual-dapp-deploy`, `ritual-dapp-da`.
