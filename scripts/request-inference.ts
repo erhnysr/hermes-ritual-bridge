@@ -8,7 +8,13 @@ import { ethers, network } from "hardhat";
 // Usage: CONSUMER_ADDRESS=0x... npm run request -- --network ritual
 
 const TEE_SERVICE_REGISTRY = "0x9644e8562cE0Fe12b4deeC4163c064A8862Bf47F";
+const RITUAL_WALLET = "0x532F0dF0896F353d8C3DD8cc134e8129DA2a3948";
 const CAPABILITY_LLM = 1; // Capability.LLM per ritual-dapp-llm
+
+const WALLET_ABI = [
+  "function deposit(uint256 lockDuration) payable",
+  "function balanceOf(address user) view returns (uint256)",
+];
 
 // Minimal registry ABI — getServicesByCapability returns registered TEE nodes.
 const REGISTRY_ABI = [
@@ -60,20 +66,23 @@ async function main() {
   );
   const executor = await findExecutor();
 
-  // The contract is the caller of precompile 0x0802, so fees are drawn from the
-  // contract's RitualWallet balance. Worst-case escrow for GLM-4.7-FP8 is
+  // Fees for the LLM precompile are charged against the RitualWallet balance of
+  // the transaction SIGNER (the EOA below), even though the contract is what
+  // calls 0x0802 — the chain recovers the signer from the original tx. So fund
+  // the signer, not the contract. Worst-case escrow for GLM-4.7-FP8 is
   // ~0.31 RITUAL per in-flight call — keep >=0.4 with headroom.
-  const [balance] = await consumer.feeBalance();
-  console.log(`\nContract RitualWallet balance: ${ethers.formatEther(balance)} RITUAL`);
+  const wallet = new ethers.Contract(RITUAL_WALLET, WALLET_ABI, signer);
+  const balance = await wallet.balanceOf(signer.address);
+  console.log(`\nSigner RitualWallet balance: ${ethers.formatEther(balance)} RITUAL`);
   if (balance < ethers.parseEther("0.4")) {
     const topUp = ethers.parseEther("0.5");
     console.log(
-      `Depositing ${ethers.formatEther(topUp)} RITUAL for fees (lock 100000 blocks)...`
+      `Depositing ${ethers.formatEther(topUp)} RITUAL for the signer (lock 100000 blocks)...`
     );
-    const depositTx = await consumer.depositFees(100000n, { value: topUp });
+    const depositTx = await wallet.deposit(100000n, { value: topUp });
     await depositTx.wait();
-    const [newBalance] = await consumer.feeBalance();
-    console.log(`New balance: ${ethers.formatEther(newBalance)} RITUAL`);
+    const newBalance = await wallet.balanceOf(signer.address);
+    console.log(`New signer balance: ${ethers.formatEther(newBalance)} RITUAL`);
   }
 
   console.log(`\nPrompt: ${prompt}`);

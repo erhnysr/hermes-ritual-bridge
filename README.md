@@ -52,10 +52,12 @@ reference (skills: `ritual-dapp-llm`, `ritual-dapp-wallet`, `ritual-dapp-da`).
 ## Usage outline
 
 1. **Fund fees.** Deposit RITUAL into RitualWallet before inference. The chain
-   escrows a worst-case (~0.31 RITUAL) per in-flight call and refunds the rest.
-   Deposit at least ~0.5 RITUAL. *Async fee checks are against the tx signer:* if
-   the Hermes EOA calls the precompile path directly, fund that EOA
-   (`depositForAgent`), not just the contract.
+   escrows a worst-case (~0.31 RITUAL) per in-flight call and refunds the rest;
+   deposit at least ~0.5 RITUAL. **The LLM fee is charged to the transaction
+   signer (the EOA), not the contract** — confirmed on testnet: the chain recovers
+   the signer from the original tx. So fund the signing EOA directly
+   (`RitualWallet.deposit`, or `depositForAgent(eoa, lock)` from a contract). The
+   contract's own `depositFees` only helps if the contract itself is the signer.
 2. **Pick an executor.** Query
    `TEEServiceRegistry.getServicesByCapability(1, true)` off-chain and pass a
    valid `teeAddress` as `executor`.
